@@ -1,4 +1,5 @@
 export default function MeetingsList({meetings}) {
+
     return (
         <table>
             <thead>
