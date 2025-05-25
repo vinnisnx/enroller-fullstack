@@ -30,17 +30,32 @@ export default function MeetingsPage({username}) {
         }
     }
 
+    async function handleSignToMeeting(meeting) {
+        const response = await fetch(`api/meetings/${meeting.id}/participants`, {
+            method: 'POST',
+            body: username,
+            headers: {'Content-Type': 'application/json'}
+        });
+        if (response.ok) {
+            getMeetings();
+        }
+
+    }
+
     useEffect(() => {
         const fetchMeetings = async () => {
-            const response = await fetch(`/api/meetings`);
-            if (response.ok) {
-                const meetings = await response.json();
-                setMeetings(meetings);
-            }
+            getMeetings();
         };
         fetchMeetings();
     }, []);
 
+    async function getMeetings() {
+        const response = await fetch(`/api/meetings`);
+        if (response.ok) {
+            const meetings = await response.json();
+            setMeetings(meetings);
+        }
+    }
     return (
         <div>
             <h2>Zajęcia ({meetings.length})</h2>
@@ -51,7 +66,7 @@ export default function MeetingsPage({username}) {
             }
             {meetings.length > 0 &&
                 <MeetingsList meetings={meetings} username={username}
-                              onDelete={handleDeleteMeeting}/>}
+                              onDelete={handleDeleteMeeting} signToMeeting={handleSignToMeeting}/>}
         </div>
     )
 }
