@@ -51,7 +51,7 @@ export default function MeetingsPage({username}) {
     }
 
     async function editMeeting(meeting) {
-        newMeeting;
+        let newMeeting = {};
         const response = await fetch(`api/meetings/${meeting.id}`, newMeeting, {
             method: 'PUT',
             body: JSON.stringify(newMeeting),
