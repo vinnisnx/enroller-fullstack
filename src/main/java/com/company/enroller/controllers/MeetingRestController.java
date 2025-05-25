@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -76,4 +77,46 @@ public class MeetingRestController {
         meetingService.update(meeting);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/{id}/participants", method = RequestMethod.POST)
+    public ResponseEntity<?> setParticipantInMeeting(@PathVariable("id") long id, @RequestBody String login) {
+        Meeting meeting = meetingService.findById(id);
+        Participant participant = participantService.findByLogin(login);
+        if (participant == null && !login.isEmpty()) {
+            Participant newParticipant = new Participant();
+            newParticipant.setLogin(login);
+            participant = newParticipant;
+            participantService.add(participant);
+        }
+        if (meeting == null && participant == null) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+        System.out.println(participant.toString() +  login.toString());
+        meeting.addParticipant(participant);
+        meetingService.update(meeting);
+        return new ResponseEntity<Meeting>(meeting, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id}/participants", method = RequestMethod.GET)
+    public ResponseEntity<?> getMeetingParticipants(@PathVariable("id") long id) {
+        Meeting meeting = meetingService.findById(id);
+        if (meeting == null) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+        Collection<Participant> participants = meetingService.findById(meeting.getId()).getParticipants();
+        return new ResponseEntity<>(participants, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id}/participants/{login}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> deleteParticipantFromMeeting(@PathVariable("id") long id, String login) {
+        Meeting meeting = meetingService.findById(id);
+        Participant participant = participantService.findByLogin(login);
+        if (meeting == null && participant == null) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+        meeting.removeParticipant(participant);
+        meetingService.update(meeting);
+        return new ResponseEntity<>(meeting, HttpStatus.OK);
+    }
+
 }
