@@ -39,6 +39,27 @@ export default function MeetingsPage({username}) {
         if (response.ok) {
             getMeetings();
         }
+    }
+
+    async function handleUnsignForMeeting(meeting) {
+        const response = await fetch(`api/meetings/${meeting.id}/participants/${username}`, {
+            method: 'DELETE',
+        })
+        if (response.ok) {
+            getMeetings();
+        }
+    }
+
+    async function editMeeting(meeting) {
+        newMeeting;
+        const response = await fetch(`api/meetings/${meeting.id}`, newMeeting, {
+            method: 'PUT',
+            body: JSON.stringify(newMeeting),
+            headers: { 'Content-Type': 'application/json' }
+        })
+        if (response.ok) {
+            //     podmiana tylko tego jednego meetingu a nie wolanie wszystkich na nowo
+        }
 
     }
 
@@ -56,6 +77,7 @@ export default function MeetingsPage({username}) {
             setMeetings(meetings);
         }
     }
+
     return (
         <div>
             <h2>Zajęcia ({meetings.length})</h2>
@@ -66,7 +88,8 @@ export default function MeetingsPage({username}) {
             }
             {meetings.length > 0 &&
                 <MeetingsList meetings={meetings} username={username}
-                              onDelete={handleDeleteMeeting} signToMeeting={handleSignToMeeting}/>}
+                              onDelete={handleDeleteMeeting} signToMeeting={handleSignToMeeting}
+                              unsignFromMeeting={handleUnsignForMeeting}/>}
         </div>
     )
 }

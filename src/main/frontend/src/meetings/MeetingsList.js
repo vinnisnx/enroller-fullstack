@@ -1,4 +1,4 @@
-export default function MeetingsList({meetings, onDelete, signToMeeting}) {
+export default function MeetingsList({meetings, onDelete, signToMeeting, unsignFromMeeting}) {
 
     return (
         <table>
@@ -15,11 +15,13 @@ export default function MeetingsList({meetings, onDelete, signToMeeting}) {
                 meetings.map((meeting, index) => <tr key={index}>
                     <td>{meeting.title}</td>
                     <td>{meeting.description}</td>
-                    {/*{index === employees.length - 1}*/}
-                    <td>{meeting.participants.map((participant, index) => <span key={index}>{participant.login}<span>{(index === meeting.participants.length - 1) ? "" : ", "}</span></span>)}</td>
+                    <td>{meeting.participants.map((participant, index) =>
+                        <span key={index}>{participant.login}<span>{(index === meeting.participants.length - 1) ? "" : ", "}</span></span>)}
+                    </td>
                     <td>
-                        <button type="button" className="button-outline delete-button" onClick={() => onDelete(meeting)}>Usun</button>
-                        <button type="button" className="button-outline" onClick={() => signToMeeting(meeting)}>Zapisz sie</button>
+                        <button type="button" className="button-outline m-r-10" onClick={() => onDelete(meeting)}>Usun</button>
+                        <button type="button" className="button-outline m-r-10" onClick={() => signToMeeting(meeting)}>Zapisz sie</button>
+                        <button type="button" className="button-outline" onClick={() => unsignFromMeeting(meeting)}>Wypisz sie</button>
                     </td>
                 </tr>)
             }
