@@ -5,6 +5,7 @@ import MeetingsList from "./MeetingsList";
 export default function MeetingsPage({username}) {
     const [meetings, setMeetings] = useState([]);
     const [addingNewMeeting, setAddingNewMeeting] = useState(false);
+    const [refresher, setRefresher] = useState(0);
 
     async function handleNewMeeting(meeting) {
         const response = await fetch('/api/meetings', {
@@ -30,6 +31,46 @@ export default function MeetingsPage({username}) {
         }
     }
 
+    async function handleUserAdding(meeting, username) {
+        const testUser = await fetch(`/api/participants/${username}`, {
+            method: 'GET',
+        });
+        if (!testUser.ok) {
+            await createUser(username);
+        }
+
+        const response = await fetch(`/api/meetings/${meeting.id}/participants`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                login: username,
+                password: "password"
+            })
+        });
+        if (response.ok) {
+            const response = await fetch(`/api/meetings`);
+            if (response.ok) {
+                const meetings = await response.json();
+                setMeetings(meetings);
+            }
+        }
+    }
+
+    async function createUser(username) {
+        await fetch(`/api/participants`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                login: username,
+                password: "password"
+            })
+        });
+    }
+
     useEffect(() => {
         const fetchMeetings = async () => {
             const response = await fetch(`/api/meetings`);
@@ -51,7 +92,7 @@ export default function MeetingsPage({username}) {
             }
             {meetings.length > 0 &&
                 <MeetingsList meetings={meetings} username={username}
-                              onDelete={handleDeleteMeeting}/>}
+                              onDelete={handleDeleteMeeting} onAddUser={handleUserAdding}/>}
         </div>
     )
 }
