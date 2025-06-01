@@ -5,15 +5,17 @@ import LoginForm from "./LoginForm";
 import UserPanel from "./UserPanel";
 
 function App() {
-    const [loggedIn, setLoggedIn] = useState('');
+    const [loggedIn, setLoggedIn] = useState(() => localStorage.getItem('username') || '');
 
     function login(email) {
         if (email) {
+            localStorage.setItem('username', email);
             setLoggedIn(email);
         }
     }
 
     function logout() {
+        localStorage.removeItem('username');
         setLoggedIn('');
     }
 

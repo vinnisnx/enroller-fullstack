@@ -1,11 +1,12 @@
 import {useEffect, useState} from "react";
 import NewMeetingForm from "./NewMeetingForm";
 import MeetingsList from "./MeetingsList";
+import Loader from '../loader';
 
 export default function MeetingsPage({username}) {
     const [meetings, setMeetings] = useState([]);
     const [addingNewMeeting, setAddingNewMeeting] = useState(false);
-    const [refresher, setRefresher] = useState(0);
+
 
     async function handleNewMeeting(meeting) {
         const response = await fetch('/api/meetings', {
@@ -32,7 +33,7 @@ export default function MeetingsPage({username}) {
     }
 
     async function handleUserAdding(meeting, username) {
-        const testUser = await fetch(`/api/participants/${username}`, {
+        const testUser = await fetch(`/api/participants/${encodeURIComponent(username)}`, {
             method: 'GET',
         });
         if (!testUser.ok) {
@@ -48,6 +49,19 @@ export default function MeetingsPage({username}) {
                 login: username,
                 password: "password"
             })
+        });
+        if (response.ok) {
+            const response = await fetch(`/api/meetings`);
+            if (response.ok) {
+                const meetings = await response.json();
+                setMeetings(meetings);
+            }
+        }
+    }
+
+    async function handleUserDeletion(meeting, username) {
+        const response = await fetch(`/api/meetings/${meeting.id}/participants/${encodeURIComponent(username)}`, {
+            method: 'DELETE',
         });
         if (response.ok) {
             const response = await fetch(`/api/meetings`);
@@ -92,7 +106,7 @@ export default function MeetingsPage({username}) {
             }
             {meetings.length > 0 &&
                 <MeetingsList meetings={meetings} username={username}
-                              onDelete={handleDeleteMeeting} onAddUser={handleUserAdding}/>}
+                              onDelete={handleDeleteMeeting} onRemoveUser={handleUserDeletion} onAddUser={handleUserAdding}/>}
         </div>
     )
 }
