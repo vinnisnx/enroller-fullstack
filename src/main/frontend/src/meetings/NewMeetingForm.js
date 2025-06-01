@@ -3,10 +3,11 @@ import {useState} from "react";
 export default function NewMeetingForm({onSubmit}) {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
+    const [date, setDate] = useState('');
 
     function submit(event) {
         event.preventDefault();
-        onSubmit({title, description, participants: []});
+        onSubmit({title, description, date, participants: []});
     }
 
     return (
@@ -18,6 +19,9 @@ export default function NewMeetingForm({onSubmit}) {
             <label>Opis</label>
             <textarea value={description}
                       onChange={(e) => setDescription(e.target.value)}></textarea>
+            <label>Data</label>
+            <textarea value={date}
+                      onChange={(e) => setDate(e.target.value)}></textarea>
             <button>Dodaj</button>
         </form>
     );

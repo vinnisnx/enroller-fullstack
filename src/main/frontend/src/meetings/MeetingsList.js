@@ -8,8 +8,8 @@ export default function MeetingList({ meetings, username, onAddUser, onRemoveUse
             <tr>
                 <th>Nazwa spotkania</th>
                 <th>Opis</th>
+                <th>Data</th>
                 <th>Uczestnicy</th>
-                <th>Akcje</th>
             </tr>
             </thead>
             <tbody>
@@ -62,6 +62,7 @@ function MeetingRow({ meeting, username, onAddUser, onRemoveUser, onDelete }) {
         <tr>
             <td>{meeting.title}</td>
             <td>{meeting.description}</td>
+            <td>{meeting.date}</td>
             <td>
                 {meeting.participants.map((user, idx) => (
                     <div key={idx}>{user.login}</div>
