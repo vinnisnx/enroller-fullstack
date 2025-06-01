@@ -1,16 +1,28 @@
 import {useState} from "react";
+import {Loader} from '../loader';
 
 export default function NewMeetingForm({onSubmit}) {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [date, setDate] = useState('');
+    const [loading, setLoading] = useState(false);
 
-    function submit(event) {
+    async function submit(event) {
+
         event.preventDefault();
-        onSubmit({title, description, date, participants: []});
+        setLoading(true);
+        try {
+            await onSubmit({title, description, date, participants: []});
+        } finally {
+            setLoading(false);
+        }
     }
 
     return (
+        <div>
+        {loading ? (
+            <Loader />
+            ) : (
         <form onSubmit={submit}>
             <h3>Dodaj nowe spotkanie</h3>
             <label>Nazwa</label>
@@ -24,5 +36,7 @@ export default function NewMeetingForm({onSubmit}) {
                       onChange={(e) => setDate(e.target.value)}></textarea>
             <button>Dodaj</button>
         </form>
+        )}
+        </div>
     );
 }

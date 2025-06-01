@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import Loader from '../loader';
+import {LoaderSmall} from '../loader';
 
 export default function MeetingList({ meetings, username, onAddUser, onRemoveUser, onDelete }) {
     return (
@@ -70,7 +70,7 @@ function MeetingRow({ meeting, username, onAddUser, onRemoveUser, onDelete }) {
             </td>
             <td>
                 {loadingUser ? (
-                        <Loader />
+                        <LoaderSmall />
                 ) : isInMeeting ? (
                     <a  className="button button-outline" onClick={handleUnenroll}>
                         Usuń się
@@ -82,7 +82,7 @@ function MeetingRow({ meeting, username, onAddUser, onRemoveUser, onDelete }) {
                 )}
                 {(meeting.participants.length === 0) ? (
                     loadingMeeting ? (
-                        <Loader />
+                        <LoaderSmall />
                         ) : (
                             <a type="button" className="button button-clear" onClick={handleDeletion}>
                                 Usuń
